@@ -1,5 +1,5 @@
 //
-//  BookTracker.swift
+//  SeriesTrackerView.swift
 //  Poketo
 //
 //  Created by Marco Francisco on 09/06/2025.
@@ -7,23 +7,23 @@
 
 import SwiftUI
 
-struct BookTracker : View {
-    @Binding var books: [OpenLibraryBook]
+struct SeriesTrackerView: View {
+    @Binding var series: [OpenLibraryBook]
     
     @State private var isShowingEdit = false
-    @State private var selectedBook: OpenLibraryBook?
+    @State private var selectedSeries: OpenLibraryBook?
     
-    func binding(for book: OpenLibraryBook) -> Binding<OpenLibraryBook> {
-        guard let index = books.firstIndex(where: { $0.id == book.id }) else {
-            fatalError("Book not found")
+    func binding(for show: OpenLibraryBook) -> Binding<OpenLibraryBook> {
+        guard let index = series.firstIndex(where: { $0.id == show.id }) else {
+            fatalError("Movie not found")
         }
-        return $books[index]
+        return $series[index]
     }
     
     var body: some View {
-        List(books) { book in
+        List(series) { show in
             HStack {
-                AsyncImage(url: book.coverURL()) { phase in
+                AsyncImage(url: show.coverURL()) { phase in
                     switch phase {
                     case .empty:
                         ProgressView()
@@ -49,7 +49,7 @@ struct BookTracker : View {
                 
                 Spacer()
                 
-                Text(book.title)
+                Text(show.title)
                 
                 Spacer()
                 
@@ -76,7 +76,7 @@ struct BookTracker : View {
                     Label("Delete", systemImage: "trash")
                 }
                 Button() {
-                    selectedBook = book
+                    selectedSeries = show
                     isShowingEdit = true
                 } label: {
                     Label("Edit", systemImage: "square.and.arrow.up")
@@ -93,22 +93,3 @@ struct BookTracker : View {
         }
     }
 }
-
-
-#Preview {
-    BookTracker(books: .constant([
-        OpenLibraryBook(
-            coverId: 11888471,
-            hasFullText: true,
-            editionCount: 5,
-            title: "Sample Book",
-            authorNames: ["Sample Author"],
-            firstPublishYear: 2025,
-            key: "/works/sample",
-            ia: nil,
-            authorKeys: nil,
-            publicScan: false
-        )
-    ]))
-}
-

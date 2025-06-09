@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BF1897D12DF7744F00696D80 /* .xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BF1897D02DF7744100696D80 /* .xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BF81A3CA2DF35B4000F381CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BF1897D02DF7744100696D80 /* .xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text; path = .xcconfig; sourceTree = "<group>"; };
 		BF81A3BB2DF35B4000F381CE /* Poketo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Poketo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF81A3C92DF35B4000F381CE /* PoketoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoketoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF81A3D32DF35B4000F381CE /* PoketoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoketoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		BF81A3B22DF35B4000F381CE = {
 			isa = PBXGroup;
 			children = (
+				BF1897D02DF7744100696D80 /* .xcconfig */,
 				BF81A3BD2DF35B4000F381CE /* Poketo */,
 				BF81A3CC2DF35B4000F381CE /* PoketoTests */,
 				BF81A3D62DF35B4000F381CE /* PoketoUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF1897D12DF7744F00696D80 /* .xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

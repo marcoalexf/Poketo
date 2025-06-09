@@ -9,13 +9,78 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var booksModel = OpenLibraryBookViewModel()
+    @StateObject private var moviesModel = MovieViewModel()
+    @StateObject private var seriesModel = MovieViewModel()
     
     @State private var selection = 0
     
     @State private var booksSearchText = ""
     @State private var moviesSearchText = ""
     @State private var seriesSearchText = ""
-
+    
+    @State private var showingAddBook = false
+    @State private var showingAddSeries = false
+    @State private var showingAddMovie = false
+    
+    var booksTab: some View {
+        BookTrackerView(books: $booksModel.books)
+            .searchable(text: $booksSearchText, prompt: "Search Books")
+            .onChange(of: booksSearchText) { oldValue, newValue in
+                print("Books search text: \(newValue)")
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        showingAddBook = true
+                    } label: {
+                        Label("Add Book", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddBook) {
+                AddBookView()
+            }
+    }
+    
+    var moviesTab: some View {
+        MoviesTrackerView(movies: $moviesModel.movies)
+            .searchable(text: $moviesSearchText, prompt: "Search Movies")
+            .onChange(of: moviesSearchText) { oldValue, newValue in
+                print("Movies search text: \(newValue)")
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        showingAddMovie = true
+                    } label: {
+                        Label("Track a movie", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddMovie) {
+                AddBookView()
+            }
+    }
+    
+    var seriesTab: some View {
+        SeriesTrackerView(series: $seriesModel.movies)
+            .searchable(text: $seriesSearchText, prompt: "Search Series")
+            .onChange(of: seriesSearchText) { oldValue, newValue in
+                print("Series search text: \(newValue)")
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        showingAddSeries = true
+                    } label: {
+                        Label("Track a series", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddMovie) {
+                AddBookView()
+            }
+    }
     
     var body: some View {
         TabView {
@@ -26,15 +91,9 @@ struct ContentView: View {
                     Text(error)
                         .foregroundColor(.red)
                 } else {
-                    BookTracker(books: $booksModel.books)
-                    .navigationTitle("Books")
-                    .searchable(text: $booksSearchText, prompt: "Search Books")
-                    .onChange(of: booksSearchText) { oldValue, newValue in
-                        print("Books search text: \(newValue)")                    }
+                    booksTab
+                        .navigationTitle("Books")
                 }
-            }
-            .task {
-                //await booksModel.seachBooksByTitle(title: "Uzumaki")
             }
             .tag(0)
             .tabItem {
@@ -42,18 +101,15 @@ struct ContentView: View {
             }
             
             NavigationStack {
-                List {
-                    HStack {
-                        Text("Movies List")
-                    }
+                if moviesModel.isLoading {
+                    ProgressView("Loading...")
+                } else if let error = moviesModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                } else {
+                    moviesTab
+                        .navigationTitle("Movies")
                 }
-                .navigationTitle("Movies")
-                .searchable(text: $moviesSearchText, prompt: "Search Movies")
-                .onChange(of: moviesSearchText) { oldValue, newValue in
-                    print("Movies search text: \(newValue)")
-                    // For now, no filtering
-                }
-                
             }
             .tag(1)
             .tabItem {
@@ -61,16 +117,14 @@ struct ContentView: View {
             }
             
             NavigationStack {
-                List {
-                    VStack {
-                        Text("Series List")
-                    }
-                }
-                .navigationTitle("Series")
-                .searchable(text: $seriesSearchText, prompt: "Search Series")
-                .onChange(of: seriesSearchText) { oldValue, newValue in
-                    print("Series search text: \(newValue)")
-                    // For now, no filtering
+                if seriesModel.isLoading {
+                    ProgressView("Loading...")
+                } else if let error = seriesModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                } else {
+                    seriesTab
+                        .navigationTitle("Series")
                 }
             }
             .tag(2)
