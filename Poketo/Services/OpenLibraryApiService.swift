@@ -11,12 +11,18 @@ class OpenLibraryApiService {
     static let shared = OpenLibraryApiService()
     
     func searchBooksByName(query: String) async throws -> OpenLibraryResponse {
-        let urlString = "https://www.googleapis.com/books/v1/volumes?q=\(query)"
-        guard let url = URL(string: urlString) else {
-            fatalError("Invalid URL: \(urlString)")
+        guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            let url = URL(string: "https://openlibrary.org/search.json?limit=10&q=\(encodedQuery)") else {
+            throw URLError(.badURL)
         }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        return try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let response = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+            return response
+        } catch {
+            print("❌ JSON decoding failed:", error)
+            throw error
+        }
     }
 }

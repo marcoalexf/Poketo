@@ -45,8 +45,9 @@ struct OpenLibraryResponse: Decodable {
     let start: Int
     let books: [OpenLibraryBook]
     
-    enum CodignKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case numberOfDocuments = "num_found"
-        case books
+        case start
+        case books = "docs"
     }
 }

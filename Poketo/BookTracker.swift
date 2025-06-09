@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct BookTracker : View {
-    @Binding var books: [Book]
+    @Binding var books: [OpenLibraryBook]
     
     @State private var isShowingEdit = false
-    @State private var selectedBook: Book?
+    @State private var selectedBook: OpenLibraryBook?
     
-    func binding(for book: Book) -> Binding<Book> {
+    func binding(for book: OpenLibraryBook) -> Binding<OpenLibraryBook> {
         guard let index = books.firstIndex(where: { $0.id == book.id }) else {
             fatalError("Book not found")
         }
@@ -24,16 +24,33 @@ struct BookTracker : View {
             NavigationStack {
                 List(books) { book in
                     HStack {
-                        Image(book.image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .clipShape(.circle)
-                            .clipped()
+                        AsyncImage(url: book.coverURL()) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(width: 50, height: 50)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(Circle())
+                                    .clipped()
+                            case .failure:
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(Circle())
+                                    .clipped()
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
                         
                         Spacer()
                         
-                        Text(book.name)
+                        Text(book.title)
                         
                         Spacer()
                         
@@ -77,7 +94,7 @@ struct BookTracker : View {
                 }
                 .navigationDestination(isPresented: $isShowingEdit) {
                     if let selectedBook = selectedBook {
-                        EditBookView(book: binding(for: selectedBook))
+                        Text("Edit")
                     }
                 }
                 .navigationTitle("Books")
@@ -87,5 +104,19 @@ struct BookTracker : View {
 
 
 #Preview {
-    BookTracker(books: .constant([Book(name: "Sample Book")]))
+    BookTracker(books: .constant([
+        OpenLibraryBook(
+            coverId: 11888471,
+            hasFullText: true,
+            editionCount: 5,
+            title: "Sample Book",
+            authorNames: ["Sample Author"],
+            firstPublishYear: 2025,
+            key: "/works/sample",
+            ia: nil,
+            authorKeys: nil,
+            publicScan: false
+        )
+    ]))
 }
+
